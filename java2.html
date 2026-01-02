@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM University - Leave Management Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --gmu-maroon: #7a0019;
+            --gmu-dark-maroon: #5b0013;
+            --gmu-gold: #ffcc33;
+            --gmu-dark-gold: #d4a017;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+        }
+        
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background: #5b1f1f;
+            color: var(--text-dark);
+        }
+
+        
+        
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, #D4A017 0%, #eacc90 50%, #D4A017 100%);
+            color: rgb(1, 1, 1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .header-brand h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: absolute;
+            left: 76px;
+            top: 13px;
+        }
+        
+        .header-brand .tagline {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: absolute;
+            left: 79px;
+            top: 40px;
+        }
+
+
+        /* Role Tabs - Karnataka Portal Style */
+.role-tabs {
+    display: flex;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.role-tab {
+    flex: 1;
+    background: #f0f0f0;
+    border: none;
+    color: var(--text-dark);
+    padding: 0.875rem 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    font-family: 'Roboto', sans-serif;
+    border-right: 1px solid var(--border-color);
+}
+
+.role-tab:last-child {
+    border-right: none;
+}
+
+.role-tab:hover {
+    background: #e0e0e0;
+}
+
+.role-tab.active {
+    background: var(--gmu-maroon);
+    color: white;
+}
+
+
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-badge {
+            background: var(--gmu-gold);
+            color: var(--gmu-maroon);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .logout-btn {
+            background: #5b1f1f;
+            border: 2px solid #5b1f1f;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        
+        
+        /* Navigation */
+        nav {
+            background: white;
+            border-bottom: 3px solid var(--gmu-gold);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+        
+        nav li {
+            margin: 0;
+        }
+        
+        nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        nav a:hover,
+        nav a.active {
+            color: var(--gmu-maroon);
+            background: var(--bg-light);
+            border-bottom-color: var(--gmu-maroon);
+        }
+        
+        .hidden { display: none; }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Pages */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Auth Pages */
+        .auth-wrapper {
+            background : linear-gradient(90deg,rgb(0, 0, 0) 0%,rgba(40,116,252,0) 90%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url(/engineering_block.jpeg) center/cover no-repeat;
+            padding: 2rem;
+        }
+        
+        .auth-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15),
+                        0 0 0 1px rgba(255,255,255,0.3) inset;
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .auth-header {
+            background: var(--gmu-maroon);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .auth-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .auth-body {
+            padding: 2rem;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gmu-gold);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gmu-maroon);
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gmu-maroon);
+            box-shadow: 0 0 0 3px rgba(122, 0, 25, 0.1);
+        }
+        
+        select {
+            cursor: pointer;
+        }
+        
+        textarea {
+            resize: vertical;
+        }
+        
+        button[type="submit"] {
+            width: 100%;
+            background: var(--gmu-maroon);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button[type="submit"]:hover {
+            background: var(--gmu-dark-maroon);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--gmu-maroon);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gmu-maroon);
+        }
+        
+        .stat-card.gold {
+            border-left-color: var(--gmu-gold);
+        }
+        
+        .stat-card.gold .stat-value {
+            color: var(--gmu-dark-gold);
+        }
+        
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--gmu-maroon);
+            color: white;
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tbody tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Landing Page */
+.landing-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(90deg,rgb(0, 0, 0.6) 0%,rgba(40,116,252,0) 90%), 
+                url('/engineering_block.jpeg') center/cover no-repeat fixed;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+}
+
+
+.landing-content {
+    max-width: 650px;
+    color: white;
+    padding-left: 3rem;
+}
+
+.landing-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--gmu-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.landing-content .tagline {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.landing-content .description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.landing-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.landing-buttons {
+    display: inline-block;
+    padding: 0.875rem 2rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.landing-buttons.primary {
+    background: var(--gmu-gold);
+    color: var(--gmu-gold);
+}
+
+.landing-buttons.primary:hover {
+    background: var(--gmu-dark-gold);
+    transform: translateY(-2px);
+}
+
+.landing-buttons.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid var(--gmu-gold);
+}
+
+.landing-buttons.secondary:hover {
+    background: var(--gmu-gold);
+    color: var(--gmu-maroon);
+}
+
+/* Keep auth-wrapper for login/signup 
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(rgba(122, 0, 25, 0.85), rgba(91, 0, 19, 0.85)), 
+                url('/gmu_top.jpg') center/cover no-repeat fixed;
+    padding: 2rem;
+}
+*/
+        
+        .btn-primary {
+            display: inline-block;
+            background: var(--gmu-gold);
+            color: var(--gmu-maroon);
+            padding: 0.875rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(255,204,51,0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--gmu-dark-gold);
+            transform: translateY(-1.3px);
+            box-shadow: 0 6px 20px rgba(255,204,51,0.4);
+        }
+        
+        .auth-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+        }
+        
+        .auth-link a {
+            color: var(--gmu-maroon);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (Hidden for auth pages) -->
+    <header class="header hidden" id="header">
+        <div class="header-brand">
+            <div>
+                <img src="gmulogo1.png" alt="GMU Logo" style="height:40px; vertical-align: middle; margin-right:10px;">
+                <h1>GM UNIVERSITY</h1>
+                <div class="tagline">Leave Management Portal</div>
+            </div>
+        </div>
+        <div class="user-info">
+            <span class="user-badge" id="userRole">STUDENT</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="hidden" id="nav">
+        <ul>
+            <li><a href="#/home">Dashboard</a></li>
+            <li><a href="#/apply">Apply Leave</a></li>
+            <li><a href="#/history">Leave History</a></li>
+            <li><a href="#/analysis">Analytics</a></li>
+        </ul>
+    </nav>
+
+    <!-- Landing Page -->
+<div id="landing" class="page active">
+    <div class="landing-wrapper">
+        <div class="landing-content">
+            <h1>GM UNIVERSITY</h1>
+            <!--p class="tagline">Igniting Innovation, Inspiring Transformation ...</p>
+            <p class="description">Welcome to GM University – A hub for Academic prowess and personal growth, cultivating leaders and futuristic-thinkers. Ready to explore your potential? Contact Us ...</p-->
+            <p>Leave Management Portal<br>Igniting Innovation, Inspiring Transformation</p>
+            <div class="landing-buttons">
+                <!--a href="#/login" class="landing-btn primary">Apply Now / Admission</a>
+                <a href="#/signup" class="landing-btn secondary">New Registration</a-->
+                <a href="#/login" class="btn-primary">Login</a>
+                <a href="#/signup" class="btn-primary">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Login Page -->
+<div id="login" class="page">
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>GM UNIVERSITY</h1>
+                <p>Leave Management Portal</p>
+            </div>
+            <div class="auth-body">
+                <div class="role-tabs" id="loginRoleTabs">
+                    <button type="button" class="role-tab" data-role="student">Student</button>
+                    <button type="button" class="role-tab" data-role="faculty">Faculty</button>
+                    <button type="button" class="role-tab" data-role="staff">Staff</button>
+                    <button type="button" class="role-tab" data-role="admin">Admin</button>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>University ID / Email</label>
+                        <input type="text" id="loginId" placeholder="Enter your ID or email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPass" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit">Sign In</button>
+                </form>
+                <div class="auth-link">
+                    New user? <a href="#/signup">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Signup Page -->
+<div id="signup" class="page">
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>Registration</h1>
+                <p>GM University Leave Portal</p>
+            </div>
+            <div class="auth-body">
+                <div class="role-tabs" id="signupRoleTabs">
+                    <button type="button" class="role-tab" data-role="student">Student</button>
+                    <button type="button" class="role-tab" data-role="faculty">Faculty</button>
+                    <button type="button" class="role-tab" data-role="staff">Staff</button>
+                </div>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>University ID</label>
+                        <input type="text" id="signupId" placeholder="Enter university ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="name@gmu.ac.in" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPass" placeholder="Create password" required>
+                    </div>
+                    <button type="submit">Create Account</button>
+                </form>
+                <div class="auth-link">
+                    Already registered? <a href="#/login">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Dashboard -->
+    <div id="home" class="page">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Available Balance</div>
+                    <div class="stat-value" id="availableLeaves">15</div>
+                </div>
+                <div class="stat-card gold">
+                    <div class="stat-label">Leaves Taken</div>
+                    <div class="stat-value" id="takenLeaves">8</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Requests</div>
+                    <div class="stat-value" id="pendingCount">2</div>
+                </div>
+                <div class="stat-card gold">
+                    <div class="stat-label">Approved This Month</div>
+                    <div class="stat-value">3</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Leave Requests</h2>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Leave Type</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentLeaves">
+                            <tr>
+                                <td>#GMU001</td>
+                                <td>Casual Leave</td>
+                                <td>2026-01-10</td>
+                                <td>2026-01-12</td>
+                                <td><span class="status-badge status-approved">Approved</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Leave -->
+    <div id="apply" class="page">
+        <div class="container">
+            <div class="card" style="max-width: 700px; margin: 0 auto;">
+                <div class="card-header">
+                    <h2 class="card-title">Submit Leave Application</h2>
+                </div>
+                <form id="leaveForm">
+                    <div class="form-group">
+                        <label>Leave Type</label>
+                        <select name="leaveType" id="leaveType" required>
+                            <option value="">Select leave type</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>From Date</label>
+                        <input type="date" name="fromDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>To Date</label>
+                        <input type="date" name="toDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Days</label>
+                        <input type="number" name="days" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason for Leave</label>
+                        <textarea name="reason" rows="4" placeholder="Provide detailed reason for leave request" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Forwarding Authority</label>
+                        <select name="authority" required>
+                            <option value="">Select authority</option>
+                            <option value="hod">Head of Department</option>
+                            <option value="dean">Dean</option>
+                            <option value="registrar">Registrar</option>
+                        </select>
+                    </div>
+                    <button type="submit">Submit Application</button>
+                </form>
+                <div id="applyMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave History -->
+    <div id="history" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Leave Application History</h2>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Leave Type</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>Days</th>
+                                <th>Applied On</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics -->
+    <div id="analysis" class="page">
+        <div class="container">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Leave Type Distribution</h3>
+                    </div>
+                    <canvas id="typeChart" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Monthly Leave Trends</h3>
+                    </div>
+                    <canvas id="monthChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Leave categories by role
+    const leaveCategories = {
+        student: [
+            'Medical Leave',
+            'Academic Event',
+            'Personal Emergency',
+            'Family Function',
+            'Sports/Cultural Activity'
+        ],
+        faculty: [
+            'Casual Leave',
+            'Earned Leave',
+            'Medical Leave',
+            'Academic Conference',
+            'Research Work',
+            'On-Duty Leave',
+            'Maternity/Paternity Leave'
+        ],
+        staff: [
+            'Casual Leave',
+            'Earned Leave',
+            'Medical Leave',
+            'Half Pay Leave',
+            'Commuted Leave',
+            'Maternity/Paternity Leave',
+            'Special Leave'
+        ],
+        admin: [
+            'Casual Leave',
+            'Earned Leave',
+            'Medical Leave',
+            'Administrative Duty',
+            'Official Tour',
+            'Special Leave'
+        ]
+    };
+
+    let leaves = [
+        {id: 'GMU001', type: 'Casual Leave', from: '2026-01-05', to: '2026-01-07', days: 3, applied: '2025-12-28', status: 'approved'},
+        {id: 'GMU002', type: 'Medical Leave', from: '2026-01-15', to: '2026-01-17', days: 3, applied: '2026-01-10', status: 'pending'},
+        {id: 'GMU003', type: 'Academic Event', from: '2025-12-20', to: '2025-12-22', days: 3, applied: '2025-12-15', status: 'approved'},
+        {id: 'GMU004', type: 'Personal Emergency', from: '2026-01-10', to: '2026-01-11', days: 2, applied: '2026-01-09', status: 'approved'},
+        {id: 'GMU005', type: 'Medical Leave', from: '2026-02-01', to: '2026-02-03', days: 3, applied: '2026-01-25', status: 'pending'}
+    ];
+
+    let currentUser = null;
+    let charts = {};
+    let loginSelectedRole = '';
+    let signupSelectedRole = '';
+
+    const routes = {
+        '/landing': 'landing',
+        '/login': 'login',
+        '/signup': 'signup',
+        '/home': 'home',
+        '/apply': 'apply',
+        '/history': 'history',
+        '/analysis': 'analysis'
+    };
+
+    function router() {
+        const hash = window.location.hash.slice(1) || '/landing';
+        const pageId = routes[hash] || 'landing';
+        
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        
+        // Clear forms when navigating to auth pages
+        if (pageId === 'login') {
+            document.getElementById('loginForm').reset();
+            loginSelectedRole = '';
+            document.querySelectorAll('#loginRoleTabs .role-tab').forEach(btn => btn.classList.remove('active'));
+        }
+        if (pageId === 'signup') {
+            document.getElementById('signupForm').reset();
+            signupSelectedRole = '';
+            document.querySelectorAll('#signupRoleTabs .role-tab').forEach(btn => btn.classList.remove('active'));
+        }
+        
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        const activeLink = Array.from(document.querySelectorAll('nav a')).find(a => a.getAttribute('href') === '#' + hash);
+        if (activeLink) activeLink.classList.add('active');
+        
+        if (['home', 'apply', 'history', 'analysis'].includes(pageId)) {
+            document.getElementById('header').classList.remove('hidden');
+            document.getElementById('nav').classList.remove('hidden');
+            if (pageId === 'analysis') initCharts();
+            if (pageId === 'history') renderHistory();
+            if (pageId === 'apply' && currentUser) updateLeaveTypes();
+        } else {
+            document.getElementById('header').classList.add('hidden');
+            document.getElementById('nav').classList.add('hidden');
+        }
+    }
+
+    function validateEmail(email, role) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return 'Invalid email format';
+        }
+        
+        // Student emails must be @gmu.ac.in
+        if (role === 'student' && !email.endsWith('@gmu.ac.in')) {
+            return 'Students must use @gmu.ac.in email';
+        }
+        
+        // Faculty/Staff should use @gmu.ac.in
+        if ((role === 'faculty' || role === 'staff') && !email.endsWith('@gmu.ac.in')) {
+            return 'Faculty/Staff must use @gmu.ac.in email';
+        }
+        
+        return null;
+    }
+
+    function login(id, pass, role) {
+        if (!role) {
+            alert('Please select your role from the tabs above');
+            return false;
+        }
+        
+        if (!id || !pass) {
+            alert('Please enter both ID/Email and Password');
+            return false;
+        }
+        
+        const storedUsers = JSON.parse(localStorage.getItem('gmu_users') || '[]');
+        const user = storedUsers.find(u => u.id === id && u.password === pass && u.role === role);
+        
+        if (user) {
+            currentUser = user;
+            localStorage.setItem('gmu_current_user', JSON.stringify(currentUser));
+            document.getElementById('userRole').textContent = role.toUpperCase();
+            window.location.hash = '#/home';
+            return true;
+        }
+        alert('Invalid credentials or role mismatch. Please check your ID, password, and selected role.');
+        return false;
+    }
+
+    function signup(name, id, email, pass, role) {
+        if (!role) {
+            alert('Please select your role from the tabs above');
+            return false;
+        }
+        
+        if (!name || !id || !email || !pass) {
+            alert('Please fill in all fields');
+            return false;
+        }
+        
+        // Validate email
+        const emailError = validateEmail(email, role);
+        if (emailError) {
+            alert(emailError);
+            return false;
+        }
+        
+        const storedUsers = JSON.parse(localStorage.getItem('gmu_users') || '[]');
+        if (storedUsers.find(u => u.id === id)) {
+            alert('University ID already registered');
+            return false;
+        }
+        if (storedUsers.find(u => u.email === email)) {
+            alert('Email already registered');
+            return false;
+        }
+        
+        const newUser = {name, id, email, password: pass, role, balance: 20};
+        storedUsers.push(newUser);
+        localStorage.setItem('gmu_users', JSON.stringify(storedUsers));
+        
+        currentUser = newUser;
+        localStorage.setItem('gmu_current_user', JSON.stringify(currentUser));
+        document.getElementById('userRole').textContent = role.toUpperCase();
+        window.location.hash = '#/home';
+    }
+
+    function logout() {
+        currentUser = null;
+        loginSelectedRole = '';
+        signupSelectedRole = '';
+        localStorage.removeItem('gmu_current_user');
+        
+        // Clear all forms
+        document.getElementById('loginForm').reset();
+        document.getElementById('signupForm').reset();
+        document.querySelectorAll('.role-tab').forEach(btn => btn.classList.remove('active'));
+        
+        window.location.hash = '#/landing';
+    }
+
+    function updateLeaveTypes() {
+        const select = document.getElementById('leaveType');
+        select.innerHTML = '<option value="">Select leave type</option>';
+        const categories = leaveCategories[currentUser.role] || [];
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            select.appendChild(opt);
+        });
+    }
+
+    function renderHistory() {
+        const tbody = document.getElementById('historyTable');
+        tbody.innerHTML = leaves.map(l => 
+            `<tr>
+                <td>#${l.id}</td>
+                <td>${l.type}</td>
+                <td>${l.from}</td>
+                <td>${l.to}</td>
+                <td>${l.days}</td>
+                <td>${l.applied}</td>
+                <td><span class="status-badge status-${l.status}">${l.status.toUpperCase()}</span></td>
+            </tr>`
+        ).join('');
+    }
+
+    function initCharts() {
+        if (charts.type) charts.type.destroy();
+        if (charts.month) charts.month.destroy();
+        
+        const ctx1 = document.getElementById('typeChart').getContext('2d');
+        charts.type = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Medical', 'Casual', 'Academic', 'Personal'],
+                datasets: [{
+                    data: [5, 4, 3, 3],
+                    backgroundColor: ['#7a0019', '#ffcc33', '#5b0013', '#d4a017'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        
+        const ctx2 = document.getElementById('monthChart').getContext('2d');
+        charts.month = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Days Taken',
+                    data: [3, 2, 4, 1, 2],
+                    backgroundColor: '#7a0019',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Role tab click handlers
+    document.addEventListener('DOMContentLoaded', () => {
+        // Login role tabs
+        document.querySelectorAll('#loginRoleTabs .role-tab').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#loginRoleTabs .role-tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                loginSelectedRole = this.getAttribute('data-role');
+            });
+        });
+        
+        // Signup role tabs
+        document.querySelectorAll('#signupRoleTabs .role-tab').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#signupRoleTabs .role-tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                signupSelectedRole = this.getAttribute('data-role');
+            });
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const id = document.getElementById('loginId').value;
+        const pass = document.getElementById('loginPass').value;
+        login(id, pass, loginSelectedRole);
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('signupName').value;
+        const id = document.getElementById('signupId').value;
+        const email = document.getElementById('signupEmail').value;
+        const pass = document.getElementById('signupPass').value;
+        signup(name, id, email, pass, signupSelectedRole);
+    });
+
+    document.getElementById('leaveForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const from = formData.get('fromDate');
+        const to = formData.get('toDate');
+        
+        if (new Date(to) <= new Date(from)) {
+            alert('To date must be after from date');
+            return;
+        }
+        
+        const newLeave = {
+            id: 'GMU' + String(leaves.length + 1).padStart(3, '0'),
+            type: formData.get('leaveType'),
+            from,
+            to,
+            days: parseInt(formData.get('days')),
+            applied: new Date().toISOString().split('T')[0],
+            status: 'pending'
+        };
+        
+        leaves.unshift(newLeave);
+        document.getElementById('applyMessage').innerHTML = 
+            '<div class="alert alert-success">Leave application submitted successfully. Request ID: #' + newLeave.id + '</div>';
+        e.target.reset();
+        setTimeout(() => {
+            document.getElementById('applyMessage').innerHTML = '';
+        }, 5000);
+    });
+
+    window.addEventListener('hashchange', router);
+    window.addEventListener('load', () => {
+        currentUser = JSON.parse(localStorage.getItem('gmu_current_user'));
+        if (currentUser) {
+            document.getElementById('userRole').textContent = currentUser.role.toUpperCase();
+            if (window.location.hash !== '#/landing') router();
+            else window.location.hash = '#/home';
+        } else {
+            window.location.hash = '#/landing';
+        }
+    });
+</script>
+
+
+</body>
+</html>
